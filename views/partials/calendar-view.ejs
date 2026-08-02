@@ -1,0 +1,76 @@
+<!-- <form action="/year" method="post">
+    <input required type="text" placeholder="Search year" name="year">
+    <button type="submit">search</button>
+</form>
+
+<h2>Year <%= year %></h2> -->
+
+<div id="calendarContainer" class="calendar-container">
+  <% for(let month = 0;month < calendar.length;month++) { %>
+    <% if (month === displayedMonth) { %>
+      <div class="month-container" id="<%= months[month] %>">
+        
+        <div class="month-title-container">
+          <% if ((month >= 1 && year === 2025) || year > 2025) { %>
+            <form class="month-form" action="/month" method="post">
+              <input type="hidden" name="month" value="<%= displayedMonth-1 %>">
+              <input type="hidden" name="direction" value="prev">
+              <button class="switch" type="submit">Prev Month</button>
+            </form>
+          <% } %>
+  
+          <h3 class="month-title"> <%= months[month] %> <%= year %> </h3>
+  
+          <form class="month-form" action="/month" method="post">
+            <input type="hidden" name="month" value="<%= displayedMonth+1 %>">
+            <input type="hidden" name="direction" value="next">
+            <button class="switch" type="submit">Next Month</button>
+          </form>
+        </div>
+
+        <div class="day-of-week">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>
+                Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <% for(let x = 0;x < calendar[month].length;x++) { %>
+          <div id="<%= year %><%= month+1 %><%= x %>" class="days">
+            <% let counter = 0; %>
+            <% for(let y = 0;y < calendar[month][x].length;y++) { %>
+              <%
+              const dateId = `${year}-${(month+1).toLocaleString().length === 1 ? '0' : ''}${month+1}-${calendar[month][x][y].toLocaleString().length === 1 ? '0' : ''}${calendar[month][x][y]}`
+              %>
+              <div
+                id="<%= dateId %>"
+                class="date <%= calendar[month][x][y] === '' ? 'empty' : ''%> <%= currentMonth === month && currentDay === calendar[month][x][y] ? 'current-day' : ''%>"
+              >
+                <div
+                  id="<%= calendar[month][x][y] %>"
+                >
+                  <%= calendar[month][x][y] %>
+                  <% if (calendar[month][x][y] !== '') { %>
+                    <% counter = 1; %>
+                  <% } %>
+                  <% for(let item of listItems){%>
+                    <% if (item.due_date.toLocaleString().split(',')[0] === dateId) { %>
+                      <div class="calendar-item">
+                        <form class="form" action="/delete" method="post">
+                          <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">
+                        </form>
+                        <span><%= item.title %></span>
+                      </div>
+                    <% } %>
+                  <% } %>
+                </div>
+              </div>
+              <% if (y === calendar[month][x].length - 1 && counter === 0) { %>
+                <script>
+                  document.getElementById(`${'<%= year %>'}${'<%= month+1 %>'}${'<%= x %>'}`).classList.add("hidden")
+                </script>
+              <% } %>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  <% } %>
+</div>

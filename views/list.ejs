@@ -1,0 +1,42 @@
+<%- include('partials/header.ejs'); -%>
+
+<form id="viewForm" class="box view" action="/view" method="post">
+  <button class="switch <%= view === 'list' ? 'active': '' %>" type="submit" name="view" value="list">
+    List View
+  </button>
+  <button class="switch <%= view === 'calendar' ? 'active' : '' %>" type="submit" name="view" value="calendar" title="Available on large screens only">
+    Calendar View
+  </button>
+</form>
+
+<form class="form new box" action="/add" method="post">
+  <%
+    const today = new Date()
+    const todayMonth = today.getMonth()
+    const todayDay = today.getDate() 
+    const todayIso = `${today.getFullYear()}-${todayMonth.toLocaleString().length === 1 ? '0' : ''}${todayMonth+1}-${todayDay.toLocaleString().length === 1 ? '0' : ''}${todayDay}`
+  %>
+  <input required type="text" name="newItem" placeholder="New Item" autocomplete="off" class="new-item" title="Item length cannot exceed 20 characters." />
+  <input required type="date" name="newItemDate" min="<%= todayIso %>" />
+  <button class="add" type="submit">+</button>
+</form>
+
+<% if (view === 'list') { %>
+  <%- include('partials/list-view.ejs'); -%>
+<% } else if (view === 'calendar') { %>
+  <%- include('partials/calendar-view.ejs'); -%>
+  <h4 class="no-calendar-container">Calendar View only works for large screens (>1250px)</h4>
+<% } %>
+
+<script>  
+  function handler(id) {
+    document.getElementById("title" + id).classList.add("hidden")
+    document.getElementById("due_date" + id).classList.add("hidden")
+    document.getElementById("edit" + id).classList.add("hidden")
+
+    document.getElementById("done" + id).classList.remove("hidden")
+    document.getElementById("input" + id).classList.remove("hidden")
+    document.getElementById("date" + id).classList.remove("hidden")
+  }
+</script>
+<%- include('partials/footer.ejs'); -%>

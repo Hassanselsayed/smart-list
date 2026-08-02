@@ -1,0 +1,88 @@
+<div class="box sorting">
+  <h2>Sort By</h2>
+  <form class="select-form" action="/sort" method="post">
+    <select id="sortSelect" onchange="this.form.submit()" name="sort" value="<%= this %>">
+      <option value="id">Created Date</option>
+      <option value="title">Name</option>
+      <option value="due_date">Complete By</option>
+    </select>
+    <select id="sortDirectionSelect" onchange="this.form.submit()" name="sortDirection" value="<%= this %>">
+      <option value="ASC">Asc</option>
+      <option value="DESC">Desc</option>
+    </select>
+  </form>
+</div>
+<script>
+  // let sort = '<%= sort %>'
+  // let sortDirection = '<%= sortDirection %>'
+  document.querySelector('#sortSelect').value = '<%= sort %>'
+  document.querySelector('#sortDirectionSelect').value = '<%= sortDirection %>'
+</script>
+
+<div class="table">
+  <table class="box items">
+    <tr>
+      <th>Done</th>
+      <th>Name</th>
+      <th>Complete By</th>
+      <th>Edit</th>
+    </tr>
+    <% for(let item of listItems){%>
+      <tr class="item">
+        <td class="small">
+          <form class="form" action="/delete" method="post">
+            <input type="checkbox" onchange="this.form.submit()" name="deleteItemId" value="<%= item.id %>">
+          </form>
+        </td>
+  
+        <td class="large" id="title<%=item.id%>">
+          <%= item.title %>
+        </td>
+  
+        <%
+          const month = item.due_date.toLocaleString('default', { month: 'long' })
+          const day = item.due_date.getDate()
+          const year = item.due_date.getFullYear()
+          const completeByIso = `${item.due_date.getFullYear()}-${item.due_date.getMonth()+1}-${item.due_date.getDate()}`
+  
+          const today = new Date()
+          const todayMonth = today.getMonth()
+          const todayDay = today.getDate() 
+          const todayIso = `${today.getFullYear()}-${todayMonth.toLocaleString().length === 1 ? '0' : ''}${todayMonth+1}-${todayDay.toLocaleString().length === 1 ? '0' : ''}${todayDay}`
+        %>
+  
+        <td class="large" id="due_date<%=item.id%>">
+          <%= `${month} ${day}, ${year}` %>
+        </td>
+  
+        <form class="form edit" action="/edit" method="post">
+          <input type="hidden" name="updatedItemId" value="<%= item.id %>">
+          
+          <td id="input<%=item.id%>" class="large hidden">
+            <input type="text" name="updatedItemTitle" value="<%= item.title %>" autocomplete="off" autofocus="true" />
+          </td>
+          
+          <td id="date<%=item.id%>" class="large hidden">
+            <input type="date" name="updatedItemDate" value="<%= completeByIso %>" min="<%= todayIso %>" />
+          </td>
+          
+          <td id="done<%=item.id%>" class="small hidden">
+            <button class="edit" type="submit"><img class="icon" src="/assets/icons/check-solid.svg" alt="tick image"></button>
+          </td>
+        </form>
+  
+        <td id="edit<%=item.id%>" class="small">
+          <button class="edit" onclick="handler('<%=item.id%>')"><img class="icon" src="/assets/icons/pencil-solid.svg" alt="pencil image"></button>
+        </td>
+      </tr>
+    <% } %>
+  </table>
+  
+  <% if (emptyTitleError) {%>
+    <p class="error">Cannot add empty item!</p>
+  <% } %>
+  
+  <% if (titleLengthError) {%>
+    <p class="error">Item length cannot exceed 20 characters!</p>
+  <% } %>
+</div>
