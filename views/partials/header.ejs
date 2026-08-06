@@ -12,6 +12,11 @@
 <body>
   <main>
     <div class="box heading">
+      <% if (locals.isAuthenticated) { %>
+        <form class="form" action="/logout" method="post">
+          <button>Log Out</button>
+        </form>
+      <% } %>
       <h1>
         To do List
       </h1>

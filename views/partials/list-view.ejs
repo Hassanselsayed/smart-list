@@ -36,7 +36,7 @@
         </td>
   
         <td class="large" id="title<%=item.id%>">
-          <%= item.title %>
+          <%= item.item %>
         </td>
   
         <%
@@ -59,7 +59,7 @@
           <input type="hidden" name="updatedItemId" value="<%= item.id %>">
           
           <td id="input<%=item.id%>" class="large hidden">
-            <input type="text" name="updatedItemTitle" value="<%= item.title %>" autocomplete="off" autofocus="true" />
+            <input type="text" name="updatedItemTitle" value="<%= item.item %>" autocomplete="off" autofocus="true" />
           </td>
           
           <td id="date<%=item.id%>" class="large hidden">
