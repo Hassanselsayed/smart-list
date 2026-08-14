@@ -47,11 +47,8 @@ function calcTable(year) {
         if (counter > monthLong) {
           arr[month][week][day] = "";
         }
-        // console.log('month:', month+1, 'week:', week, 'day:', day, arr[month][week][day])
       }
-      // console.log('month:', month+1, 'week:', week, arr[month][week])
     }
-    // console.log('month:', month, arr[month])
   }
   return arr;
 }

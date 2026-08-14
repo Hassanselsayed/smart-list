@@ -1,4 +1,13 @@
 </main>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-auto-dismiss]").forEach((element) => {
+      window.setTimeout(() => {
+        element.classList.add("is-hidden");
+      }, 3000);
+    });
+  });
+</script>
 </body>
 
 </html>

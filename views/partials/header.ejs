@@ -9,15 +9,43 @@
   <title>Permalist</title>
 </head>
 
-<body>
-  <main>
-    <div class="box heading">
-      <% if (locals.isAuthenticated) { %>
-        <form class="form" action="/logout" method="post">
-          <button>Log Out</button>
-        </form>
-      <% } %>
-      <h1>
-        To do List
-      </h1>
-    </div>
+<body data-theme="light">
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="brand">Permalist</div>
+      <div class="header-actions">
+        <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle color mode" title="Toggle color mode">☀️</button>
+        <% if (locals.isAuthenticated) { %>
+          <form class="inline-form" action="/logout" method="post">
+            <button class="btn btn-secondary" type="submit">Log Out</button>
+          </form>
+        <% } else if (locals.currentPath !== '/login') { %>
+          <a class="btn btn-secondary" href="/login">Sign In</a>
+        <% } %>
+      </div>
+    </header>
+
+    <% if (locals.toastMessage) { %>
+      <div class="toast" role="status" aria-live="polite" data-auto-dismiss>
+        <span><%= locals.toastMessage %></span>
+      </div>
+    <% } %>
+
+    <script>
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.body.setAttribute('data-theme', initialTheme);
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('themeToggle');
+        if (toggle) {
+          toggle.textContent = document.body.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+          toggle.addEventListener('click', () => {
+            const nextTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', nextTheme);
+            localStorage.setItem('theme', nextTheme);
+            toggle.textContent = nextTheme === 'dark' ? '☀️' : '🌙';
+          });
+        }
+      });
+    </script>
