@@ -1,36 +1,93 @@
 <%- include('partials/header.ejs'); -%>
 
-<form id="viewForm" class="box view" action="/view" method="post" aria-label="Choose a view">
-  <button class="switch <%= view === 'list' ? 'active': '' %>" type="submit" name="view" value="list" aria-pressed="<%= view === 'list' %>">
+<form
+  id="viewForm"
+  class="box view"
+  action="/view"
+  method="post"
+  aria-label="Choose a view"
+>
+  <button
+    class="switch <%= view === 'list' ? 'active': '' %>"
+    type="submit"
+    name="view"
+    value="list"
+    aria-pressed="<%= view === 'list' %>"
+  >
     List View
   </button>
-  <button class="switch <%= view === 'calendar' ? 'active' : '' %>" type="submit" name="view" value="calendar" aria-pressed="<%= view === 'calendar' %>">
+  <button
+    class="switch <%= view === 'calendar' ? 'active' : '' %>"
+    type="submit"
+    name="view"
+    value="calendar"
+    aria-pressed="<%= view === 'calendar' %>"
+  >
     Calendar View
   </button>
 </form>
 
-<form class="form new box" action="/add" method="post" aria-label="Add a new task">
+<form
+  class="form new box"
+  action="/add"
+  method="post"
+  aria-label="Add a new task"
+>
   <%
     const today = new Date()
     const todayMonth = today.getMonth()
     const todayDay = today.getDate() 
     const todayIso = `${today.getFullYear()}-${todayMonth.toLocaleString().length === 1 ? '0' : ''}${todayMonth+1}-${todayDay.toLocaleString().length === 1 ? '0' : ''}${todayDay}`
   %>
-  <label class="visually-hidden" for="newItem">New task name</label>
-  <input id="newItem" required type="text" name="newItem" placeholder="New Item" autocomplete="off" class="new-item" title="Item length cannot exceed 20 characters." />
-  <label class="visually-hidden" for="newItemDate">Task due date</label>
-  <input id="newItemDate" required type="date" name="newItemDate" min="<%= todayIso %>" />
-  <button class="add" type="submit" aria-label="Add task">+</button>
+  <label
+    class="visually-hidden"
+    for="newItem"
+  >New task name</label>
+  <input
+    id="newItem"
+    required
+    type="text"
+    name="newItem"
+    maxlength="<%= locals.maxLength %>"
+    placeholder="New Item"
+    autocomplete="off"
+    class="new-item"
+    title="Item length cannot exceed <%= locals.maxLength %> characters."
+  />
+  <label
+    class="visually-hidden"
+    for="newItemDate"
+  >Task due date</label>
+  <input
+    id="newItemDate"
+    required
+    type="date"
+    name="newItemDate"
+    min="<%= todayIso %>"
+  />
+  <button
+    class="add"
+    type="submit"
+    aria-label="Add task"
+  >+</button>
 </form>
 
 <% if (locals.flash && locals.flash.message) { %>
-  <div class="flash <%= locals.flash.type === 'error' ? 'flash-error' : 'flash-success' %>" data-auto-dismiss>
+  <div
+    class="flash <%= locals.flash.type === 'error' ? 'flash-error' : 'flash-success' %>"
+    data-auto-dismiss
+  >
     <span><%= locals.flash.message %></span>
   </div>
 <% } %>
 
 <% if (locals.pendingDeleteNotice) { %>
-  <div class="pending-delete-notice" role="status" aria-live="polite" data-auto-dismiss>
+  <div
+    class="pending-delete-notice"
+    role="status"
+    aria-live="polite"
+    data-auto-dismiss
+  >
     <span><%= locals.pendingDeleteNotice.title %> deleted.</span>
     <a href="/undo-delete?itemId=<%= locals.pendingDeleteNotice.itemId %>">Undo</a>
   </div>

@@ -11,27 +11,4 @@ export const db = new pg.Client({
 
 export const initializeDatabase = async () => {
   await db.connect();
-
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id SERIAL PRIMARY KEY,
-      google_id TEXT UNIQUE NOT NULL,
-      email TEXT,
-      name TEXT
-    );
-  `);
-
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS items (
-      id SERIAL PRIMARY KEY,
-      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-      item TEXT NOT NULL,
-      due_date DATE,
-      completed BOOLEAN NOT NULL DEFAULT FALSE
-    );
-  `);
-
-  await db.query(
-    "ALTER TABLE items ADD COLUMN IF NOT EXISTS completed BOOLEAN NOT NULL DEFAULT FALSE;"
-  );
 };

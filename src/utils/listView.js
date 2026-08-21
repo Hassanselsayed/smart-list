@@ -34,16 +34,16 @@ export const normalizeView = (nextView, currentView) => {
   return currentView;
 };
 
-export const isValidTitle = (title, uiState) => {
+export const isValidTitle = (title) => {
   if (title === "") {
-    uiState.emptyTitleError = true;
-    uiState.titleLengthError = false;
-    return false;
+    return "Cannot add an empty item.";
+  }
+  
+  if (title.length > ITEM_TITLE_MAX_LENGTH) {
+    return `Item length cannot exceed ${ITEM_TITLE_MAX_LENGTH} characters.`;
   }
 
-  uiState.emptyTitleError = false;
-  uiState.titleLengthError = false;
-  return true;
+  return null;
 };
 
 export const truncateTitle = (title) => {
@@ -64,8 +64,6 @@ export const buildListViewModel = (items, uiState) => ({
     ...item,
     titlePreview: truncateTitle(item.item),
   })),
-  emptyTitleError: uiState.emptyTitleError,
-  titleLengthError: uiState.titleLengthError,
   sort: uiState.sort,
   sortDirection: uiState.sortDirection,
   view: uiState.view,
@@ -75,6 +73,7 @@ export const buildListViewModel = (items, uiState) => ({
   currentMonth: new Date().getMonth(),
   currentDay: new Date().getDate(),
   year: uiState.year,
+  maxLength: ITEM_TITLE_MAX_LENGTH
 });
 
 export const updateDisplayedMonth = (uiState, month, direction) => {

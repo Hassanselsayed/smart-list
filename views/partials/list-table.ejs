@@ -1,4 +1,7 @@
-<div id="listTableContainer" class="table">
+<div
+  id="listTableContainer"
+  class="table"
+>
   <table class="box items">
     <tr>
       <th>Done</th>
@@ -10,13 +13,31 @@
     <% for(let item of listItems){%>
       <tr class="item <%= item.completed ? 'completed' : '' %>">
         <td class="small">
-          <form class="form complete-form" action="/toggle-complete" method="post">
-            <input type="hidden" name="toggleItemId" value="<%= item.id %>">
-            <input type="checkbox" onchange="this.form.submit()" name="completed" value="true" <%= item.completed ? 'checked' : '' %> aria-label="Mark <%= item.item %> as complete">
+          <form
+            class="form complete-form"
+            action="/toggle-complete"
+            method="post"
+          >
+            <input
+              type="hidden"
+              name="toggleItemId"
+              value="<%= item.id %>"
+            >
+            <input
+              type="checkbox"
+              onchange="this.form.submit()"
+              name="completed"
+              value="true"
+              <%= item.completed ? 'checked' : '' %>
+              aria-label="Mark <%= item.item %> as complete"
+            >
           </form>
         </td>
 
-        <td class="large text-left" id="title<%=item.id%>">
+        <td
+          class="large text-left"
+          id="title<%=item.id%>"
+        >
           <span class="item-text <%= item.completed ? 'completed-text' : '' %>">
             <%= item.item %>
           </span>
@@ -34,45 +55,103 @@
           const todayIso = `${today.getFullYear()}-${todayMonth.toLocaleString().length === 1 ? '0' : ''}${todayMonth+1}-${todayDay.toLocaleString().length === 1 ? '0' : ''}${todayDay}`
         %>
 
-        <td class="large" id="due_date<%=item.id%>">
+        <td
+          class="large"
+          id="due_date<%=item.id%>"
+        >
           <%= `${month} ${day}, ${year}` %>
         </td>
 
-        <form class="form edit" action="/edit" method="post">
-          <input type="hidden" name="updatedItemId" value="<%= item.id %>">
+        <form
+          class="form edit"
+          action="/edit"
+          method="post"
+        >
+          <input
+            type="hidden"
+            name="updatedItemId"
+            value="<%= item.id %>"
+          >
 
-          <td id="input<%=item.id%>" class="large hidden">
-            <input type="text" name="updatedItemTitle" value="<%= item.item %>" autocomplete="off" autofocus="true" class="edit-title-input" />
+          <td
+            id="input<%=item.id%>"
+            class="large hidden"
+          >
+            <input
+              type="text"
+              name="updatedItemTitle"
+              maxlength="<%= locals.maxLength %>"
+              value="<%= item.item %>"
+              autocomplete="off"
+              autofocus="true"
+              class="edit-title-input"
+              title="Item length cannot exceed <%= locals.maxLength %> characters."
+            />
           </td>
 
-          <td id="date<%=item.id%>" class="large hidden">
-            <input type="date" name="updatedItemDate" value="<%= completeByIso %>" min="<%= todayIso %>" />
+          <td
+            id="date<%=item.id%>"
+            class="large hidden"
+          >
+            <input
+              type="date"
+              name="updatedItemDate"
+              value="<%= completeByIso %>"
+              min="<%= todayIso %>"
+            />
           </td>
 
-          <td id="done<%=item.id%>" class="small hidden">
-            <button class="edit" type="submit" aria-label="Save changes to task"><img class="icon" src="/assets/icons/check-solid.svg" alt="Save task"></button>
+          <td
+            id="done<%=item.id%>"
+            class="small hidden"
+          >
+            <button
+              class="edit"
+              type="submit"
+              aria-label="Save changes to task"
+            ><img
+              class="icon"
+              src="/assets/icons/check-solid.svg"
+              alt="Save task"
+            ></button>
           </td>
         </form>
 
-        <td id="edit<%=item.id%>" class="small">
-          <button class="edit" onclick="handler('<%=item.id%>')" aria-label="Edit task"><img class="icon" src="/assets/icons/pencil-solid.svg" alt="Edit task"></button>
+        <td
+          id="edit<%=item.id%>"
+          class="small"
+        >
+          <button
+            class="edit"
+            onclick="handler('<%=item.id%>')"
+            aria-label="Edit task"
+          ><img
+            class="icon"
+            src="/assets/icons/pencil-solid.svg"
+            alt="Edit task"
+          ></button>
         </td>
 
         <td class="small">
-          <form class="form delete-form" action="/delete" method="post">
-            <input type="hidden" name="deleteItemId" value="<%= item.id %>">
-            <button class="delete-item" type="submit" aria-label="Delete task">×</button>
+          <form
+            class="form delete-form"
+            action="/delete"
+            method="post"
+          >
+            <input
+              type="hidden"
+              name="deleteItemId"
+              value="<%= item.id %>"
+            >
+            <button
+              class="delete-item"
+              type="submit"
+              aria-label="Delete task"
+            >×</button>
           </form>
         </td>
       </tr>
     <% } %>
   </table>
 
-  <% if (emptyTitleError) {%>
-    <p class="error">Cannot add empty item!</p>
-  <% } %>
-
-  <% if (titleLengthError) {%>
-    <p class="error">Item length cannot exceed 20 characters!</p>
-  <% } %>
 </div>

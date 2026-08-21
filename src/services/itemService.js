@@ -1,5 +1,5 @@
 import { db } from "../config/database.js";
-import { DELETE_UNDO_WINDOW_MS } from "../config/constants.js";
+import { DELETE_UNDO_WINDOW_MS, MAX_NUMBER_ITEMS } from "../config/constants.js";
 import { clearPendingDeleteNotice } from "../utils/sessionState.js";
 
 const pendingDeleteTimers = new Map();
@@ -30,6 +30,17 @@ export const getUserItems = async (userId, sort, sortDirection) => {
     [userId]
   );
   return dbResult.rows;
+};
+
+export const canAddItems = async (userId) => {
+  try {
+    const result = await db.query("SELECT COUNT(*) FROM items WHERE user_id = $1;", [userId])
+    const userItemsNumber = result.rows[0].count
+    return Number(userItemsNumber) < MAX_NUMBER_ITEMS
+  } catch (err) {
+    console.log(err)
+    return false
+  }
 };
 
 export const getVisibleUserItems = async (req, userId, sort, sortDirection) => {

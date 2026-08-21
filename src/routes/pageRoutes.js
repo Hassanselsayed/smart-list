@@ -8,8 +8,6 @@ const renderListPage = async (req, res) => {
     const uiState = getUiState(req);
     const items = await getVisibleUserItems(req, req.user.id, uiState.sort, uiState.sortDirection);
     res.render("list.ejs", buildListViewModel(items, uiState));
-    uiState.emptyTitleError = false;
-    uiState.titleLengthError = false;
   } catch (err) {
     console.error("Unable to load app page:", err);
     res.status(500).render("error.ejs", {

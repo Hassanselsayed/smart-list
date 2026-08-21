@@ -1,5 +1,5 @@
 export const sessionLocals = (req, res, next) => {
-  res.locals.isAuthenticated = req.isAuthenticated?.() || false;
+  res.locals.isAuthenticated = req.isAuthenticated();
   res.locals.flash = req.session.flash;
   if (req.session.flash) {
     delete req.session.flash;

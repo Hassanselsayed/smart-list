@@ -3,9 +3,18 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles/main.css" />
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="IE=edge"
+  />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <link
+    rel="stylesheet"
+    href="styles/main.css"
+  />
   <title>Permalist</title>
 </head>
 
@@ -14,19 +23,40 @@
     <header class="app-header">
       <div class="brand">Permalist</div>
       <div class="header-actions">
-        <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle color mode" title="Toggle color mode">☀️</button>
+        <button
+          id="themeToggle"
+          class="icon-button"
+          type="button"
+          aria-label="Toggle color mode"
+          title="Toggle color mode"
+        >☀️</button>
         <% if (locals.isAuthenticated) { %>
-          <form class="inline-form" action="/logout" method="post">
-            <button class="btn btn-secondary" type="submit">Log Out</button>
+          <form
+            class="inline-form"
+            action="/logout"
+            method="post"
+          >
+            <button
+              class="btn btn-secondary"
+              type="submit"
+            >Log Out</button>
           </form>
         <% } else if (locals.currentPath !== '/login') { %>
-          <a class="btn btn-secondary" href="/login">Sign In</a>
+          <a
+            class="btn btn-secondary"
+            href="/login"
+          >Sign In</a>
         <% } %>
       </div>
     </header>
 
     <% if (locals.toastMessage) { %>
-      <div class="toast" role="status" aria-live="polite" data-auto-dismiss>
+      <div
+        class="toast"
+        role="status"
+        aria-live="polite"
+        data-auto-dismiss
+      >
         <span><%= locals.toastMessage %></span>
       </div>
     <% } %>

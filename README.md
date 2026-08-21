@@ -2,7 +2,7 @@
 
 ## Overview
 
-Smart List is a personal task management web app that lets authenticated users create, edit, complete, and delete to-do items with optional due dates. Items can be viewed as a sortable table, where all task management actions happen, or in a read-only calendar layout for a quick overview of what's due when. The interface supports a persistent light/dark theme toggle, responsive layouts, and user-facing recovery messages when an operation fails. Deleting an item opens a short undo window before the record is permanently removed from the database; failed deletion restores the item on the next request.
+Smart List is a personal task management web app that lets authenticated users create, edit, complete, and delete to-do items with optional due dates. Items can be viewed as a sortable table, where all task management actions happen, or in a read-only calendar layout for a quick overview of what's due when. The interface supports a persistent light/dark theme toggle, responsive layouts, and user-facing recovery messages when an operation fails. Deleting an item opens a short undo window before the record is permanently removed from the database.
 
 ### Languages and Technologies
 
@@ -10,6 +10,82 @@ Smart List is a personal task management web app that lets authenticated users c
 - **SQL (PostgreSQL)** — persistent storage for users and items
 - **EJS** — server-rendered HTML templates
 - **CSS** — styling, including a monochrome light/dark theme system
+
+## Local Setup
+
+### Prerequisites
+
+- Node.js and npm
+- PostgreSQL
+- A Google Cloud project with OAuth 2.0 credentials
+
+### 1. Install Dependencies
+
+From the project directory, install the Node.js dependencies:
+
+```bash
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root. Do not commit this file or share its secrets.
+
+```env
+SESSION_SECRET=replace-with-a-long-random-string
+
+PG_USER=your-postgres-user
+PG_HOST=localhost
+PG_DATABASE=smart_list
+PG_PASSWORD=your-postgres-password
+PG_PORT=5432
+
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+```
+
+The application reads these values through `dotenv`. `SESSION_SECRET` signs login sessions, the `PG_*` values configure the PostgreSQL connection, and the Google values configure Passport's OAuth strategy.
+
+### 3. Create the PostgreSQL Database
+
+Create the database named in `PG_DATABASE`, for example:
+
+```bash
+createdb smart_list
+```
+
+Alternatively, create it from a PostgreSQL client:
+
+```sql
+CREATE DATABASE smart_list;
+```
+
+The application connects to this database during startup and creates the `users` and `items` tables if they do not already exist. No separate schema migration command is required for local development.
+
+### 4. Configure Google OAuth
+
+In Google Cloud Console:
+
+1. Create or select a project.
+2. Configure the OAuth consent screen.
+3. Create an OAuth 2.0 Client ID for a web application.
+4. Add this authorized redirect URI:
+
+	`http://localhost:3000/auth/google/callback`
+
+5. Copy the generated client ID and client secret into `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`.
+
+The callback URI must match the value configured in Google Cloud and the value used by `src/config/passport.js`. The login entry point is `/auth/google`, reached through the sign-in page at `/login`.
+
+### 5. Start the Application
+
+Start the server with:
+
+```bash
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in a browser. The server initializes the database connection before listening on port `3000`.
 
 ### Design Evolution
 

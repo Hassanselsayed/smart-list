@@ -1,12 +1,24 @@
 <div class="box sorting">
   <h2>Sort By</h2>
-  <form class="select-form" action="/sort" method="post">
-    <select id="sortSelect" name="sort" value="<%= this %>">
+  <form
+    class="select-form"
+    action="/sort"
+    method="post"
+  >
+    <select
+      id="sortSelect"
+      name="sort"
+      value="<%= this %>"
+    >
       <option value="id">Created Date</option>
       <option value="item">Name</option>
       <option value="due_date">Complete By</option>
     </select>
-    <select id="sortDirectionSelect" name="sortDirection" value="<%= this %>">
+    <select
+      id="sortDirectionSelect"
+      name="sortDirection"
+      value="<%= this %>"
+    >
       <option value="ASC">Asc</option>
       <option value="DESC">Desc</option>
     </select>
@@ -39,12 +51,8 @@
       }
 
       const payload = await response.json();
-      if (payload?.html) {
-        const tableContainer = document.getElementById('listTableContainer');
-        if (tableContainer) {
-          tableContainer.outerHTML = payload.html;
-        }
-      }
+      const tableContainer = document.getElementById('listTableContainer');
+      tableContainer.outerHTML = payload.html;
     } catch (error) {
       sortForm.submit();
     }

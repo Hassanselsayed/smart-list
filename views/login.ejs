@@ -4,7 +4,20 @@
   <p class="eyebrow">Welcome</p>
   <h1>Start organizing</h1>
   <p class="hero-copy">Use your Google account to keep your tasks synced and ready whenever you need them.</p>
-  <a class="btn btn-primary btn-large" href="/auth/google" role="button">Continue with Google</a>
+  <a
+    class="btn btn-primary btn-large"
+    href="/auth/google"
+    role="button"
+  >Continue with Google</a>
+
+  <% if (locals.flash && locals.flash.message) { %>
+    <div
+      class="flash <%= locals.flash.type === 'error' ? 'flash-error' : 'flash-success' %>"
+      data-auto-dismiss
+    >
+      <span><%= locals.flash.message %></span>
+    </div>
+  <% } %>
 </div>
 
 <%- include('partials/footer') %>

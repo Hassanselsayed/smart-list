@@ -16,6 +16,7 @@ import {
 } from "../utils/listView.js";
 import {
   cancelPendingDelete,
+  canAddItems,
   getVisibleUserItems,
   schedulePendingDelete,
 } from "../services/itemService.js";
@@ -23,15 +24,23 @@ import {
 export const registerItemRoutes = (app) => {
   app.post("/add", ensureAuthenticated, async (req, res) => {
     try {
-      const uiState = getUiState(req);
-      if (isValidTitle(req.body.newItem, uiState)) {
-        await db.query("INSERT INTO items (user_id, item, due_date) VALUES ($1, $2, $3);", [
-          req.user.id,
-          req.body.newItem,
-          req.body.newItemDate,
-        ]);
-        setFlash(req, "success", "✓ Item added");
+      if (!await canAddItems(req.user.id)) {
+        setFlash(req, "error", "Items limit reached. Delete items to add more.");
+        return res.redirect("/app");
       }
+
+      const titleValidationError = isValidTitle(req.body.newItem);
+      if (titleValidationError) {
+        setFlash(req, "error", titleValidationError);
+        return res.redirect("/app");
+      }
+
+      await db.query("INSERT INTO items (user_id, item, due_date) VALUES ($1, $2, $3);", [
+        req.user.id,
+        req.body.newItem,
+        req.body.newItemDate,
+      ]);
+      setFlash(req, "success", "✓ Item added");
       res.redirect("/app");
     } catch (err) {
       console.error("Unable to add item:", err);
@@ -42,8 +51,9 @@ export const registerItemRoutes = (app) => {
 
   app.post("/edit", ensureAuthenticated, async (req, res) => {
     try {
-      const uiState = getUiState(req);
-      if (!isValidTitle(req.body.updatedItemTitle, uiState)) {
+      const titleValidationError = isValidTitle(req.body.updatedItemTitle);
+      if (titleValidationError) {
+        setFlash(req, "error", titleValidationError);
         return res.redirect("/app");
       }
 
