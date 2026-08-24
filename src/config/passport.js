@@ -19,21 +19,39 @@ export const configurePassport = (passport, db) => {
           const email = profile.email;
           const result = await db.query("SELECT * FROM users WHERE google_id=$1;", [profile.id]);
           if (result.rows.length === 0) {
-            const userCountResult = await db.query("SELECT COUNT(*) FROM users;");
-            const usersCount = userCountResult.rows[0].count;
-            if (Number(usersCount) >= MAX_NUMBER_USERS) {
-              req.session.flash = {
-                type: "error",
-                message: "Sorry, new user registration is currently unavailable. Try again later.",
-              };
-              return cb(null, false);
-            }
+            try {
+              await db.query("BEGIN");
+              await db.query("LOCK TABLE users IN EXCLUSIVE MODE;");
 
-            const newUser = await db.query(
-              "INSERT INTO users (google_id, email, name) VALUES ($1, $2, $3) RETURNING *;",
-              [profile.id, email, profile.displayName]
-            );
-            return cb(null, newUser.rows[0]);
+              const userCountResult = await db.query("SELECT COUNT(*) FROM users;");
+              const usersCount = Number(userCountResult.rows[0].count);
+
+              if (usersCount >= MAX_NUMBER_USERS) {
+                await db.query("ROLLBACK");
+                req.session.flash = {
+                  type: "error",
+                  message: "Sorry, new user registration is currently unavailable. Try again later.",
+                };
+                return cb(null, false);
+              }
+
+              const newUser = await db.query(
+                "INSERT INTO users (google_id, email, name) VALUES ($1, $2, $3) RETURNING *;",
+                [profile.id, email, profile.displayName]
+              );
+
+              await db.query("COMMIT");
+              return cb(null, newUser.rows[0]);
+            } catch (err) {
+              try {
+                await db.query("ROLLBACK");
+              } catch (rollbackErr) {
+                console.error("Failed to rollback user registration transaction:", rollbackErr);
+              }
+
+              console.error("User registration failed:", err);
+              return cb(err);
+            }
           }
 
           return cb(null, result.rows[0]);
