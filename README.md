@@ -33,6 +33,7 @@ Create a `.env` file in the project root. Do not commit this file or share its s
 
 ```env
 SESSION_SECRET=replace-with-a-long-random-string
+APP_URL=http://localhost:3000
 
 PG_USER=postgres
 PG_HOST=aws-0-us-east-1.pooler.supabase.com
@@ -82,11 +83,11 @@ In Google Cloud Console:
 3. Create an OAuth 2.0 Client ID for a web application.
 4. Add this authorized redirect URI:
 
-	`http://localhost:3000/auth/google/callback`
+	`${APP_URL}/auth/google/callback`
 
 5. Copy the generated client ID and client secret into `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env`.
 
-The callback URI must match the value configured in Google Cloud and the value used by `src/config/passport.js`. The login entry point is `/auth/google`, reached through the sign-in page at `/login`.
+The callback URI must match the value configured in Google Cloud and the value used by `src/config/passport.js`. Set `APP_URL` to the deployed app URL in the hosting provider. The login entry point is `/auth/google`, reached through the sign-in page at `/login`.
 
 ### 5. Start the Application
 

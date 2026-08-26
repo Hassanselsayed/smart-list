@@ -12,6 +12,7 @@ import { registerPageRoutes } from "./routes/pageRoutes.js";
 
 export const createApp = () => {
   const app = express();
+  app.set("trust proxy", 1);
 
   app.use(
     session({
@@ -20,6 +21,7 @@ export const createApp = () => {
       saveUninitialized: true,
       cookie: {
         maxAge: SESSION_MAX_AGE_MS,
+        secure: process.env.NODE_ENV === "production",
       },
     })
   );
