@@ -16,7 +16,7 @@ Smart List is a personal task management web app that lets authenticated users c
 ### Prerequisites
 
 - Node.js and npm
-- PostgreSQL
+- A Supabase project or PostgreSQL database
 - A Google Cloud project with OAuth 2.0 credentials
 
 ### 1. Install Dependencies
@@ -34,11 +34,11 @@ Create a `.env` file in the project root. Do not commit this file or share its s
 ```env
 SESSION_SECRET=replace-with-a-long-random-string
 
-PG_USER=your-postgres-user
-PG_HOST=localhost
-PG_DATABASE=smart_list
-PG_PASSWORD=your-postgres-password
-PG_PORT=5432
+PG_USER=postgres
+PG_HOST=aws-0-us-east-1.pooler.supabase.com
+PG_DATABASE=postgres
+PG_PASSWORD=your-supabase-password
+PG_PORT=6543
 
 GOOGLE_CLIENT_ID=your-google-oauth-client-id
 GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
@@ -46,21 +46,13 @@ GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
 
 The application reads these values through `dotenv`. `SESSION_SECRET` signs login sessions, the `PG_*` values configure the PostgreSQL connection, and the Google values configure Passport's OAuth strategy.
 
-### 3. Create the PostgreSQL Database and Tables
+For Supabase, use the session pooler host and port from the project dashboard. The session pooler is the correct option for a long-lived Node.js `pg.Client`, while the transaction pooler is intended for short-lived connection patterns.
 
-Create the database named in `PG_DATABASE`, for example:
+The connection also needs SSL enabled in the app, so the database client is configured with `ssl: { rejectUnauthorized: false }`.
 
-```bash
-createdb smart_list
-```
+### 3. Create the Database Tables
 
-Alternatively, create it from a PostgreSQL client:
-
-```sql
-CREATE DATABASE smart_list;
-```
-
-Create the application tables in pgAdmin or another PostgreSQL client before starting the app:
+If you are using Supabase, create the tables in the Supabase SQL editor. If you are using a local PostgreSQL database, create the database first and then apply the schema below.
 
 ```sql
 CREATE TABLE users (
@@ -79,7 +71,7 @@ CREATE TABLE items (
 );
 ```
 
-Startup connects to the configured database but does not create or alter tables. Apply future schema changes manually in PostgreSQL.
+Startup connects to the configured database but does not create or alter tables. Apply future schema changes manually in PostgreSQL or Supabase.
 
 ### 4. Configure Google OAuth
 
