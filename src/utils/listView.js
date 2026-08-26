@@ -58,10 +58,25 @@ export const truncateTitle = (title) => {
   return `${title.slice(0, TITLE_PREVIEW_LENGTH)}...`;
 };
 
+const formatDateAsIso = (date) => {
+  if (!date) {
+    return "";
+  }
+
+  if (typeof date === "string") {
+    return date.slice(0, 10);
+  }
+
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+};
+
 export const buildListViewModel = (items, uiState) => ({
   listTitle: "To Do List",
   listItems: items.map((item) => ({
     ...item,
+    dueDateIso: formatDateAsIso(item.due_date),
     titlePreview: truncateTitle(item.item),
   })),
   sort: uiState.sort,

@@ -90,7 +90,7 @@
                     <% counter = 1; %>
                   <% } %>
                   <% for(let item of listItems){%>
-                    <% if (item.due_date.toLocaleString().split(',')[0] === dateId) { %>
+                    <% if (item.dueDateIso === dateId) { %>
                       <div class="calendar-item <%= item.completed ? 'completed' : '' %>">
                         <span
                           class="calendar-item-text <%= item.completed ? 'completed-text' : '' %>"
