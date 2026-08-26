@@ -5,6 +5,7 @@ export const registerAuthRoutes = (app) => {
     "/auth/google",
     passport.authenticate("google", {
       scope: ["profile", "email"],
+      prompt: "consent",
     })
   );
 
